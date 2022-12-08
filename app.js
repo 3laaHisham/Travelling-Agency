@@ -112,7 +112,7 @@ const addNewDestination = (req, res, next) => {
 // handling get requests
 
 app.get('/', (req, res) => {
-  res.render('login')
+  res.render('login', { message: "" })
 });
 app.get('/hiking', (req, res) => {
   res.render('hiking')
@@ -161,9 +161,6 @@ app.get('/registration', (req, res) => {
 app.get('/search', (req, res) => {
   res.render('searchresults')
 });
-app.get('register', (req, res) => {
-  res.render('register')
-})
 
 // handling post requests
 app.post('/', validateUser, (req, res) => {
