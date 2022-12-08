@@ -1,22 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <style>
         body {
             background-image: url("background1.jpg");
             background-repeat: no-repeat;
-            background-size: 100%;
+            background-size: cover;
+            max-width: 100%;
         }
+
         h1 {
             color: white;
             text-align: center;
+            margin: 50px auto;
             -webkit-text-stroke: 1px black;
         }
-        .cont {
-            position:relative;
-            left:600px;
-            top:50px;
+
+        p {
+            height: 20px;
+        }
+
+        .container {
+            margin: 50px auto;
             color: white;
+        }
+
+        .cont {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            margin: 30px auto;
+        }
+
+        form {
+            text-align: center;
         }
     </style>
     <meta charset="UTF-8">
@@ -41,8 +61,12 @@
             <br><br>
             <input type="submit" value="Login">
         </form>
+        <p>
+            <%= message%>
+        </p>
         <br>
-        <a href="registration" style="color: black">I dont have an account</a>
+        <a href="registration" style="color: black;">I dont have an account</a>
     </div>
 </body>
+
 </html>

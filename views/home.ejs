@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <style>
         body {
@@ -7,11 +8,13 @@
             background-repeat: no-repeat;
             background-size: 100%;
         }
+
         h1 {
             color: white;
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+
         .cont {
             position: relative;
             left: 600px;
@@ -19,28 +22,34 @@
             color: white;
             -webkit-text-stroke: 0.5px black;
         }
-        .container1 {
-            position: fixed;
-            left: 50px;
-            top: 150px;
-            color: white;
+
+        .container {
+            margin: 50px auto;
         }
-        .container2 {
-            position: fixed;
-            left: 200px;
-            top: 150px;
+
+        .destinations {
             color: white;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
+
+        .container1,
+        .container2,
         .container3 {
-            position: fixed;
-            left: 350px;
-            top: 150px;
-            color: white;
+            text-align: center;
         }
+
+        .container1:hover,
+        .container2:hover,
+        .container3:hover {
+            transform: scale(1.1);
+        }
+
         .wanttogo {
-            position: fixed;
-            left: 80px;
-            top: 370px;
+            margin: 150px auto;
+            text-align: center;
         }
     </style>
     <meta charset="UTF-8">
@@ -70,31 +79,35 @@
     </nav>
 
     <div class="container">
-        <h1>Welcome <%= name %></h1>
+        <h1>Welcome</h1>
     </div>
-    <div class="container1">
-        <img id="image" src="/hiking.png" width="100" height="100">
-        <br>
-        <label class="ml-4 my-2">Hiking</label>
-        <br>
-        <button onclick="location.href = '/hiking';" id="hiking" class="btn btn-secondary ml-3"> View </button>
-    </div>
-    <div class="container2">
-        <img id="image" src="/cities.png" width="100" height="100">
-        <br>
-        <label class="ml-4 my-2">Cities</label>
-        <br>
-        <button onclick="location.href = '/cities';" id="cities" class="btn btn-secondary ml-3"> View </button>
-    </div>
-    <div class="container3">
-        <img id="image" src="/islands.png" width="100" height="100">
-        <br>
-        <label class="ml-4 my-2">Islands</label>
-        <br>
-        <button onclick="location.href = '/islands';" id="islands" class="btn btn-secondary ml-3"> View </button>
+    <div class="destinations">
+        <div class="container1">
+            <img id="image" src="/hiking.png" width="150" height="150">
+            <br>
+            <label class="ml-4 my-2">Hiking</label>
+            <br>
+            <button onclick="location.href = '/hiking';" id="hiking" class="btn btn-secondary ml-3"> View </button>
+        </div>
+        <div class="container2">
+            <img id="image" src="/cities.png" width="150" height="150">
+            <br>
+            <label class="ml-4 my-2">Cities</label>
+            <br>
+            <button onclick="location.href = '/cities';" id="cities" class="btn btn-secondary ml-3"> View </button>
+        </div>
+        <div class="container3">
+            <img id="image" src="/islands.png" width="150" height="150">
+            <br>
+            <label class="ml-4 my-2">Islands</label>
+            <br>
+            <button onclick="location.href = '/islands';" id="islands" class="btn btn-secondary ml-3"> View </button>
+        </div>
     </div>
     <div class="wanttogo">
-        <button onclick="location.href = '/wanttogo';" id="wanttogo" class="btn btn-secondary ml-3" style="width: 300px;">Want-to-Go List</button>
+        <button onclick="location.href = '/wanttogo';" id="wanttogo" class="btn btn-secondary ml-3"
+            style="width: 300px;">Want-to-Go List</button>
     </div>
 </body>
+
 </html>

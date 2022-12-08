@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <style>
         body {
@@ -7,11 +8,13 @@
             background-repeat: no-repeat;
             background-size: 100%;
         }
+
         h1 {
             color: white;
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+
         .cont {
             position: relative;
             left: 600px;
@@ -19,27 +22,32 @@
             color: white;
             -webkit-text-stroke: 0.5px black;
         }
-        .container1 {
-            position: fixed;
-            left: 50px;
-            top: 150px;
+
+        .container {
             color: white;
+            margin: 100px auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
-        .container2 {
-            position: fixed;
-            left: 300px;
-            top: 150px;
-            color: white;
+
+        .container1:hover,
+        .container2:hover {
+            transform: scale(1.1);
         }
+
         #label1 {
             position: relative;
             right: 10px;
         }
+
         #label2 {
             position: relative;
             right: 0px;
         }
-        #inca, #annapurna {
+
+        #inca,
+        #annapurna {
             position: relative;
             left: 50px;
         }
@@ -51,6 +59,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
         <a class="navbar-brand" style="color: rgb(191, 255, 161)">Hiking</a>
@@ -68,19 +77,23 @@
             </form>
         </div>
     </nav>
-    <div class="container1">
-        <img id="image" src="/inca.png" width="193" height="300">
-        <br>
-        <label id="label1" class="ml-4 my-2">Inca Trail to Machu Picchu</label>
-        <br>
-        <button onclick="location.href = '/inca';" id="inca" class="btn btn-secondary ml-3"> View </button>
-    </div>
-    <div class="container2">
-        <img id="image" src="/annapurna.png" width="193" height="300">
-        <br>
-        <label id ="label2" class="ml-4 my-2">Annapurna Circuit</label>
-        <br>
-        <button onclick="location.href = '/annapurna';" id="annapurna" class="btn btn-secondary ml-3"> View </button>
+    <div class="container">
+        <div class="container1">
+            <img id="image" src="/inca.png" width="193" height="300">
+            <br>
+            <label id="label1" class="ml-4 my-2">Inca Trail to Machu Picchu</label>
+            <br>
+            <button onclick="location.href = '/inca';" id="inca" class="btn btn-secondary ml-3"> View </button>
+        </div>
+        <div class="container2">
+            <img id="image" src="/annapurna.png" width="193" height="300">
+            <br>
+            <label id="label2" class="ml-4 my-2">Annapurna Circuit</label>
+            <br>
+            <button onclick="location.href = '/annapurna';" id="annapurna" class="btn btn-secondary ml-3"> View
+            </button>
+        </div>
     </div>
 </body>
+
 </html>
