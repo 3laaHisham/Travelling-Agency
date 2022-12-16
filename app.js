@@ -148,7 +148,7 @@ app.get('/search', (req, res) => {
 });
 app.post('/search', search, (req, res) => {
   const list = req.searchResults;
-  const searchTerm = req.body.Search ? req.body.Search : "Search";
+  const searchTerm = req.body.Search;
   res.render('searchresults', { list, searchTerm: searchTerm });
 })
 
