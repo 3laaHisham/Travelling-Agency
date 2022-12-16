@@ -16,7 +16,7 @@ const distinations = [
   "Paris",
   "Rome",
   "Bali Island",
-  "Santorini Island  ",
+  "Santorini Island",
   "Inca Trail to Machu Picchu",
   "Annapurna Circuit"
 ];
@@ -130,7 +130,7 @@ const search = (req, res, next) => {
   const searchTerm = req.body.Search;
   let searchResults = [];
   req.searchResults = [];
-  for (let i = 0; searchTerm !== null && typeof searchTerm !== "undefined" && i < distinations.length; i++) {
+  for (let i = 0; searchTerm !== null && typeof searchTerm !== "undefined" && searchTerm !== '' && i < distinations.length; i++) {
     let currValue = distinations[i].toLowerCase().trim();
     if (currValue.includes(searchTerm)) {
       let word = distinations[i].split(" ")[0].toLowerCase().trim();
