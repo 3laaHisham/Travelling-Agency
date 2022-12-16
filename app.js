@@ -6,9 +6,23 @@ const MongoClient = require('mongodb').MongoClient;
 const session = require('express-session')
 
 const homePage = readFileSync(path.resolve(__dirname, './views/home.ejs'));
-
+const dataBaseURL = "mongodb://0.0.0.0:27017";
+const dataBaseName = 'TravellingWebsite';
+const usersCollectionName = 'UsersDB';
 const app = express();
-
+const pr = console.log;
+const port = 3000;
+const distinations = [
+  "Paris",
+  "Rome",
+  "Bali Island",
+  "Santorini Island  ",
+  "Inca Trail to Machu Picchu",
+  "Annapurna Circuit"
+];
+const links = [
+  "http://localhost:3000/home"
+]
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -45,10 +59,10 @@ var userID = Math.floor(Math.random() * (1e7));
 // adds a new user to the database if it is not already there
 const addNewUser = (req, res, next) => {
   const { username, password } = req.body;
-  MongoClient.connect("mongodb://0.0.0.0:27017", async (err, client) => {
+  MongoClient.connect(dataBaseURL, async (err, client) => {
     if (err) throw err;
     try {
-      const users = client.db('TravellingWebsite').collection('UsersDB');
+      const users = client.db(dataBaseName).collection(usersCollectionName);
       if (username && password) {
         if ((await users.find({ username }).toArray()).length !== 0) {
           req.session.message = 'username is already token';
@@ -70,11 +84,12 @@ const addNewUser = (req, res, next) => {
 // validates the username and password and adds the user id to the session.
 const validateUser = (req, res, next) => {
   const { username, password } = req.body;
-  MongoClient.connect("mongodb://0.0.0.0:27017", async (err, client) => {
+  MongoClient.connect(dataBaseURL, async (err, client) => {
     if (err) throw err;
     try {
-      const users = client.db('TravellingWebsite').collection('UsersDB');
+      const users = client.db(dataBaseName).collection(usersCollectionName);
       let user = (await users.find({ username, password }).toArray());
+      console.log(user.wanToGoList);
       if (username && password && user.length !== 0) {
         req.session.userID = user[0].id;
         next();
@@ -107,6 +122,35 @@ const addNewDestination = (req, res, next) => {
   })
 }
 
+// The Search
+const search = (req, res, next) => {
+  let protocol = req.protocol ? req.protocol : 'http';
+  let hostname = req.hostname;
+
+  const searchTerm = req.body.Search;
+  let searchResults = [];
+  req.searchResults = [];
+  for (let i = 0; searchTerm !== null && typeof searchTerm !== "undefined" && i < distinations.length; i++) {
+    let currValue = distinations[i].toLowerCase().trim();
+    if (currValue.includes(searchTerm)) {
+      let word = distinations[i].split(" ")[0].toLowerCase().trim();
+      let link = `${protocol}://${hostname}:${port}/${word}`
+      searchResults.push({ link: link, name: distinations[i] });
+    }
+  }
+  req.searchResults = searchResults;
+  next();
+
+}
+app.get('/search', (req, res) => {
+  const list = req.session.searchResults
+  res.render('searchresults', { list });
+});
+app.post('/search', search, (req, res) => {
+  const list = req.searchResults;
+  const searchTerm = req.body.Search ? req.body.Search : "Search";
+  res.render('searchresults', { list, searchTerm: searchTerm });
+})
 
 
 // handling get requests
@@ -158,24 +202,25 @@ app.get('/registration', (req, res) => {
   req.session.message = "";
   res.render('registration', { message })
 });
-app.get('/search', (req, res) => {
-  res.render('searchresults')
-});
 
 // handling post requests
 app.post('/', validateUser, (req, res) => {
   res.redirect('/home')
+
 });
 
 app.post('/login', validateUser, (req, res) => {
+
   res.redirect('/home')
+
 });
 
 app.post('/register', addNewUser, (req, res) => {
   req.session.message = 'registration completed successfully'
   res.redirect('/login')
 });
+app.listen(port);
 
-app.listen(3000);
+
 
 

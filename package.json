@@ -1,9 +1,9 @@
 {
-  "name": "myproject",
-  "version": "0.0.0",
+  "name": "NetworksProject",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -14,8 +14,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "mongodb": "^4.12.1",
-    "mongoose": "^6.7.4",
-    "mongose": "^0.0.2-security",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.20"
   }
 }

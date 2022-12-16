@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <style>
         body {
@@ -8,10 +9,18 @@
             background-size: 100%;
         }
 
-        h1 {
+        h1,
+        h2 {
             color: white;
             text-align: center;
             -webkit-text-stroke: 1px blue;
+        }
+
+
+        Results_div {
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 1px rgb(255, 0, 43);
         }
     </style>
     <meta charset="UTF-8">
@@ -21,6 +30,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
         <a class="navbar-brand" style="color: rgb(191, 255, 161)">Search Results</a>
@@ -38,5 +48,26 @@
             </form>
         </div>
     </nav>
+    <div class="Results_list">
+        <% if (list !==null && typeof list !=="undefined" && list.length>0 ) {%>
+            <h1>Search Results <%= searchTerm ? `for ${searchTerm}`:"" %>
+            </h1>
+            <%list.forEach(item=>{%>
+                <h2>
+                    <a class="Results_div" href=<%=item.link %> >
+                        <img src=<%=`${item.name.split(" ")[0].toLowerCase().trim()}.png` %> alt=<%=item.name%>
+                            style=" width:100px;height:100px; margin=50;text-align: center;">
+                        <%=item.name%>
+                    </a>
+                </h2>
+                <%})%>
+                    <%} else if(list !==null && typeof list !=="undefined" ) {%>
+                        <h1>No search Results Found</h1>
+                        <%} else{ %>
+                            <h1>Use search bar for searching </h1>
+                            <%}%>
+    </div>
+
 </body>
+
 </html>
