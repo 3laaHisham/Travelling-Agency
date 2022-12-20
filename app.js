@@ -3,14 +3,13 @@ const path = require('path');
 const { readFileSync } = require('fs');
 const { title } = require('process');
 const MongoClient = require('mongodb').MongoClient;
-const session = require('express-session')
+const session = require('express-session');
+const { Console } = require('console');
 
 const homePage = readFileSync(path.resolve(__dirname, './views/home.ejs'));
 const dataBaseURL = "mongodb://0.0.0.0:27017";
 const dataBaseName = 'TravellingWebsite';
 const usersCollectionName = 'UsersDB';
-const app = express();
-const pr = console.log;
 const port = 3000;
 const distinations = [
   "Paris",
@@ -20,9 +19,14 @@ const distinations = [
   "Inca Trail to Machu Picchu",
   "Annapurna Circuit"
 ];
-const links = [
-  "http://localhost:3000/home"
-]
+const app = express();
+// const isLogged = (req,res,next)=>{
+//   if(req.session.userID)
+//   {
+//     next()
+//   } else {
+//     res.redirect('/')
+//   }}
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -54,7 +58,6 @@ Notes:
 
 */
 
-var userID = Math.floor(Math.random() * (1e7));
 
 // adds a new user to the database if it is not already there
 const addNewUser = (req, res, next) => {
@@ -68,12 +71,12 @@ const addNewUser = (req, res, next) => {
           req.session.message = 'username is already token';
           res.redirect('/registration');
         } else {
-          users.insertOne({ id: userID, username, password, wanToGoList: [] });
+          users.insertOne({ username, password, wanToGoList: [] });
           next();
         }
       } else {
         req.session.message = 'Invalid Credentials';
-        res.redirect('registration');
+        res.redirect('/registration');
       }
     } catch (err) {
       console.log(err);
@@ -89,9 +92,8 @@ const validateUser = (req, res, next) => {
     try {
       const users = client.db(dataBaseName).collection(usersCollectionName);
       let user = (await users.find({ username, password }).toArray());
-      console.log(user.wanToGoList);
       if (username && password && user.length !== 0) {
-        req.session.userID = user[0].id;
+        req.session.username = user[0].username;
         next();
       } else {
         req.session.message = 'invalid username or password';
@@ -103,24 +105,6 @@ const validateUser = (req, res, next) => {
   })
 }
 
-// not complete yet!
-const addNewDestination = (req, res, next) => {
-  MongoClient.connect("mongodb://0.0.0.0:27017", async (err, client) => {
-    if (err) throw err;
-    try {
-      const users = client.db('TravellingWebsite').collection('UsersDB');
-      let user = (await users.find({ id: req.session.userID }).toArray());
-
-      // here...
-      let Destination = '?... Whatever'
-
-      user[0].wanToGoList.push(Destination);
-      users.updateOne({ id: req.session.userID }, { $set: { wanToGoList: user[0].wanToGoList } })
-    } catch (err) {
-      console.log(err);
-    }
-  })
-}
 
 // The Search
 const search = (req, res, next) => {
@@ -167,41 +151,24 @@ app.get('/cities', (req, res) => {
 app.get('/islands', (req, res) => {
   res.render('islands')
 });
-app.get('/login', (req, res) => {
-  let message = req.session.message;
-  req.session.message = "";
-  res.render('login', { message })
-});
+
 app.get('/wanttogo', (req, res) => {
   res.render('wanttogo')
 });
-app.get('/rome', (req, res) => {
-  res.render('rome')
-});
-app.get('/santorini', (req, res) => {
-  res.render('santorini')
-});
-app.get('/bali', (req, res) => {
-  res.render('bali')
-});
-app.get('/paris', (req, res) => {
-  res.render('paris')
-});
-app.get('/annapurna', (req, res) => {
-  res.render('annapurna')
-});
-app.get('/inca', (req, res) => {
-  res.render('inca')
-});
+
+app.get('/login', (req, res) => handleGetMessage(req, res, 'login'));
+app.get('/rome', (req, res) => handleGetMessage(req, res, 'rome'));
+app.get('/santorini', (req, res) => handleGetMessage(req, res, 'santorini'));
+app.get('/bali', (req, res) => handleGetMessage(req, res, 'bali'));
+app.get('/paris', (req, res) => handleGetMessage(req, res, 'paris'));
+app.get('/annapurna', (req, res) => handleGetMessage(req, res, 'annapurna'));
+app.get('/inca', (req, res) => handleGetMessage(req, res, 'inca'));
+app.get('/registration', (req, res) => handleGetMessage(req, res, 'registration'));
 
 app.get('/home', (req, res) => {
   res.render('home')
 });
-app.get('/registration', (req, res) => {
-  let message = req.session.message;
-  req.session.message = "";
-  res.render('registration', { message })
-});
+
 
 // handling post requests
 app.post('/', validateUser, (req, res) => {
@@ -219,8 +186,47 @@ app.post('/register', addNewUser, (req, res) => {
   req.session.message = 'registration completed successfully'
   res.redirect('/login')
 });
+
+app.post('/rome', (req, res) => addToWanToGO(req, res, 'Rome', 'rome'));
+app.post('/paris', (req, res) => addToWanToGO(req, res, 'Paris', 'paris'));
+
+app.post('/inca', (req, res) => addToWanToGO(req, res, 'Inca', 'inca'));
+app.post('/annapurna', (req, res) => addToWanToGO(req, res, 'Annapurna', 'annapurna'));
+
+app.post('/bali', (req, res) => addToWanToGO(req, res, 'Bali', 'bali'));
+app.post('/santorini', (req, res) => addToWanToGO(req, res, 'Santorini', 'santorini'));
+
+
+function addToWanToGO(req, res, Destination, url) {
+  MongoClient.connect(dataBaseURL, async (err, client) => {
+    if (err) throw err;
+    try {
+      const users = client.db(dataBaseName).collection(usersCollectionName);
+      req.session.message = 'Added Successfully'
+      if(await users.find({
+        username:req.session.username,
+        wanToGoList: { $in: [Destination] },
+      })
+      .count()>0)
+      req.session.message='You can not add the same destination twice'
+      users.updateOne({ username: req.session.username }, { $addToSet: { wanToGoList: Destination } })
+      handleGetMessage(req, res, url)
+    } catch (err) {
+      console.log(err);
+    }
+  })
+}
+
+function handleGetMessage(req, res, url) {
+  let message = req.session.message;
+  req.session.message = "";
+  res.render(url, { message: message })
+}
+
+
+
+
+
 app.listen(port);
-
-
 
 

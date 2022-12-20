@@ -84,9 +84,18 @@
         Peru's Inca Trail is perhaps the world's greatest hike because it combines the best of both types of travel: a
         four-to-five day walk to the spectacular lost city of Machu Picchu that winds through the zone where the
         snowcapped Andes Mountains crash into the lush Amazon jungle.
+        <br>
+        <br>
+        <br>
+            <p style="color: red;">
+                <%= message%>
+            </p>
     </div>
+   
     <div class="wanttogo">
-        <button id="wanttogo" class="btn btn-secondary ml-3">Add to Want-to-Go List</button>
+        <form method="post">
+        <button id="wanttogo" class="btn btn-secondary ml-3" name="inc-wanttogo" value="value4">Add to Want-to-Go List</button>
+        </form>
     </div>
     <div class="video">
         <iframe width="480" height="360" src="https://www.youtube.com/embed/cnMa-Sm9H4k"
