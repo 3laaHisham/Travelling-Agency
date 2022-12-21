@@ -82,6 +82,33 @@ const addNewUser = (req, res, next) => {
   });
 }
 
+// displays the want to go list 
+
+const get_myDis_list = (req, res) => {
+  const username = req.session.username;
+  MongoClient.connect(dataBaseURL, async (err, client) => {
+  if (err) throw err;
+  try {
+    let protocol = req.protocol ? req.protocol : 'http';
+    let hostname = req.hostname;
+    const users = client.db(dataBaseName).collection(usersCollectionName);
+    let user = (await users.find({ username }).toArray());
+    var mylist =  user[0].wanToGoList;
+    let result_list = [];
+    for (let i = 0; i < mylist.length; i++) {
+      let word = mylist[i].split(" ")[0].toLowerCase().trim();
+      let link = `${protocol}://${hostname}:${port}/${word}`
+      result_list.push({ link: link, name: mylist[i] });
+    }
+    console.log(mylist);
+    res.render('wanttogo', {list : result_list});
+  } catch (err) {
+    console.log(err);
+  }
+})
+}
+
+
 // validates the username and password and adds the user id to the session.
 const validateUser = (req, res, next) => {
   const { username, password } = req.body;
@@ -150,9 +177,10 @@ app.get('/islands', isLogged,(req, res) => {
   res.render('islands')
 });
 
-app.get('/wanttogo', isLogged,(req, res) => {
-  res.render('wanttogo')
+app.get('/wanttogo', (req, res) => {
+  get_myDis_list(req, res);
 });
+
 
 app.get('/login',(req, res) => handleGetMessage(req, res, 'login'));
 app.get('/rome', isLogged,(req, res) => handleGetMessage(req, res, 'rome'));

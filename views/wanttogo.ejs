@@ -13,6 +13,14 @@
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+        .Results_div {
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 1px rgb(255, 0, 43);
+        }
+        .Distination_list{
+            text-align: center;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,5 +46,22 @@
             </form>
         </div>
     </nav>
+    <div class="Distination_list">
+        <% if (list !==null && typeof list !== "undefined" && list.length>0 ) {%>
+            <h1>My Saved Distinations
+            </h1>
+            <%list.forEach(item=>{%>
+                <h2>
+                    <a class="Results_div" href=<%=item.link %> >
+                        <img src=<%=`${item.name.split(" ")[0].toLowerCase().trim()}.png` %> alt=<%=item.name%>
+                            style=" width:100px;height:100px; margin=50;text-align: center;">
+                        <%=item.name%>
+                    </a>
+                </h2>
+                <%})%>
+                    <%} else if(list !==null && typeof list !=="undefined" ) {%>
+                        <h1>No Saved Distinations</h1>
+                        <%}%>
+    </div>
 </body>
 </html>
