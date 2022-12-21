@@ -20,13 +20,13 @@ const distinations = [
   "Annapurna Circuit"
 ];
 const app = express();
-// const isLogged = (req,res,next)=>{
-//   if(req.session.userID)
-//   {
-//     next()
-//   } else {
-//     res.redirect('/')
-//   }}
+const isLogged = (req, res, next) => {
+  if (req.session && req.session.username) {
+    next()
+  } else {
+    res.redirect('/login');
+  }
+}
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -53,8 +53,6 @@ Notes:
 --- userID is a Global variable for UsersIDs then it's incremented by 1
 
 --- req.session.message is a placeholder for messages displayed in different ejs files
-
---- req.session.userID represents the id of the user
 
 */
 
@@ -142,30 +140,31 @@ app.post('/search', search, (req, res) => {
 app.get('/', (req, res) => {
   res.render('login', { message: "" })
 });
-app.get('/hiking', (req, res) => {
+app.get('/hiking', isLogged,(req, res) => {
   res.render('hiking')
 });
-app.get('/cities', (req, res) => {
+app.get('/cities', isLogged,(req, res) => {
   res.render('cities')
 });
-app.get('/islands', (req, res) => {
+app.get('/islands', isLogged,(req, res) => {
   res.render('islands')
 });
 
-app.get('/wanttogo', (req, res) => {
+app.get('/wanttogo', isLogged,(req, res) => {
   res.render('wanttogo')
 });
 
-app.get('/login', (req, res) => handleGetMessage(req, res, 'login'));
-app.get('/rome', (req, res) => handleGetMessage(req, res, 'rome'));
-app.get('/santorini', (req, res) => handleGetMessage(req, res, 'santorini'));
-app.get('/bali', (req, res) => handleGetMessage(req, res, 'bali'));
-app.get('/paris', (req, res) => handleGetMessage(req, res, 'paris'));
-app.get('/annapurna', (req, res) => handleGetMessage(req, res, 'annapurna'));
-app.get('/inca', (req, res) => handleGetMessage(req, res, 'inca'));
-app.get('/registration', (req, res) => handleGetMessage(req, res, 'registration'));
+app.get('/login',(req, res) => handleGetMessage(req, res, 'login'));
+app.get('/rome', isLogged,(req, res) => handleGetMessage(req, res, 'rome'));
+app.get('/santorini', isLogged,(req, res) => handleGetMessage(req, res, 'santorini'));
+app.get('/bali', isLogged,(req, res) => handleGetMessage(req, res, 'bali'));
+app.get('/paris', isLogged,(req, res) => handleGetMessage(req, res, 'paris'));
+app.get('/annapurna', isLogged,(req, res) => handleGetMessage(req, res, 'annapurna'));
+app.get('/inca', isLogged,(req, res) => handleGetMessage(req, res, 'inca'));
+app.get('/registration',(req, res) => handleGetMessage(req, res, 'registration'));
 
-app.get('/home', (req, res) => {
+app.get('/home', isLogged,(req, res) => {
+  console.log('hello');
   res.render('home')
 });
 
@@ -203,12 +202,12 @@ function addToWanToGO(req, res, Destination, url) {
     try {
       const users = client.db(dataBaseName).collection(usersCollectionName);
       req.session.message = 'Added Successfully'
-      if(await users.find({
-        username:req.session.username,
+      if (await users.find({
+        username: req.session.username,
         wanToGoList: { $in: [Destination] },
       })
-      .count()>0)
-      req.session.message='You can not add the same destination twice'
+        .count() > 0)
+        req.session.message = 'You can not add the same destination twice'
       users.updateOne({ username: req.session.username }, { $addToSet: { wanToGoList: Destination } })
       handleGetMessage(req, res, url)
     } catch (err) {
@@ -222,10 +221,6 @@ function handleGetMessage(req, res, url) {
   req.session.message = "";
   res.render(url, { message: message })
 }
-
-
-
-
 
 app.listen(port);
 
