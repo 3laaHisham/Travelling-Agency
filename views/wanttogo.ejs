@@ -52,7 +52,7 @@
             </h1>
             <%list.forEach(item=>{%>
                 <h2>
-                    <a class="Results_div" href=<%=item.link %> >
+                    <a style="text-decoration: none;" class="Results_div" href=<%=item.link %> >
                         <img src=<%=`${item.name.split(" ")[0].toLowerCase().trim()}.png` %> alt=<%=item.name%>
                             style=" width:100px;height:100px; margin=50;text-align: center;">
                         <%=item.name%>
