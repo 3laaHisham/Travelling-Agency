@@ -7,3 +7,7 @@ A network application based on the client/server architecture using Node.js, Exp
 npm install
 ```
 
+## Live Demo of the Project 
+[https://travelling-agency.onrender.com/](https://travelling-agency.onrender.com/)
+
+Note that Some features doesn't work as MongoDB is set for local use.
