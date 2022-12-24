@@ -230,7 +230,7 @@ function search (req, res) {
       let currValue = destination.toLowerCase();
       if (currValue.includes(searchTerm)) {
         let word = destination.split(" ")[0].toLowerCase().trim();
-        let link = `${protocol}://${hostname}:${port}/${word}`
+        let link = `/${word}`
         searchResults.push({ link, name: destination });
       }
     });
