@@ -9,5 +9,10 @@ npm install
 
 ## Live Demo of the Project 
 [https://travelling-agency.onrender.com/](https://travelling-agency.onrender.com/)
-Use username :admin , Password :admin 
+
+
+Username :admin 
+
+Password :admin 
+
 Note that Some features doesn't work as MongoDB is set for local use.
