@@ -39,8 +39,8 @@ app.use(session({
 
 // handling get requests
 
-app.get('/', (req, res) => {
-  res.render('login', { message: "" })
+app.get('/', isLogged, (req, res) => {
+  res.redirect('/home');
 });
 app.get('/hiking', isLogged,(req, res) => {
   res.render('hiking')
@@ -59,7 +59,7 @@ app.get('/islands', isLogged,(req, res) => {
 });
 app.get('/wanttogo', isLogged, renderWantToGo);
 
-app.get('/login',(req, res) => handleGetMessage(req, res, 'login'));
+app.get('/login',(req, res) => {console.log("get login"); handleGetMessage(req, res, 'login'); });
 app.get('/rome', isLogged,(req, res) => handleGetMessage(req, res, 'rome'));
 app.get('/santorini', isLogged,(req, res) => handleGetMessage(req, res, 'santorini'));
 app.get('/bali', isLogged,(req, res) => handleGetMessage(req, res, 'bali'));
@@ -77,8 +77,11 @@ app.post('/login', validateUser, (req, res) => {
   res.redirect('/home')
 });
 app.post('/register', addNewUser, (req, res) => {
+  console.log('post reg 1');
   req.session.message = 'registration completed successfully'
-  res.redirect('/login')
+  console.log('post reg 2');
+  res.redirect('/login');
+  console.log('post reg 3');
 });
 app.post('/search', search)
 
@@ -99,9 +102,11 @@ function isLogged(req, res, next) {
 }
 
 function handleGetMessage(req, res, url) {
+  console.log("1 handle get" + url);
   let message = req.session.message;
   req.session.message = "";
   res.render(url, { message })
+  console.log("2 handle get" + url);
 }
 
 function addToWanToGO(req, res, Destination) {
@@ -119,10 +124,12 @@ function addToWanToGO(req, res, Destination) {
       }).count() > 0)
         req.session.message = 'You can not add the same destination twice'
 
-      users.updateOne({ username: req.session.username }, { $addToSet: { wanToGoList: Destination } })
+      await users.updateOne({ username: req.session.username }, { $addToSet: { wanToGoList: Destination } })
       handleGetMessage(req, res, url);
     } catch (err) {
       console.log(err);
+    } finally {
+      client.close();
     }
   })
 }
@@ -139,6 +146,8 @@ Notes:
 
 // adds a new user to the database if it is not already there
 function addNewUser(req, res, next) {
+  console.log('addnewUser');
+
   const { username, password } = req.body;
   MongoClient.connect(dataBaseURL, async (err, client) => {
     if (err) throw err;
@@ -150,7 +159,7 @@ function addNewUser(req, res, next) {
           req.session.message = 'username is already token';
           res.redirect('/registration');
         } else {
-          users.insertOne({ username, password, wanToGoList: [] });
+          await users.insertOne({ username, password, wanToGoList: [] });
           next();
         }
       } else {
@@ -159,6 +168,8 @@ function addNewUser(req, res, next) {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      client.close();
     }
   });
 }
@@ -171,8 +182,6 @@ function renderWantToGo (req, res) {
   if (err) throw err;
 
   try {
-    let protocol = req.protocol ? req.protocol : 'http';
-    let hostname = req.hostname;
     const users = client.db(dataBaseName).collection(usersCollectionName);
     let user = (await users.find({ username }).toArray());
 
@@ -180,13 +189,15 @@ function renderWantToGo (req, res) {
     let result_list = [];
     mylist.forEach(item => {
       let word = item.split(" ")[0].toLowerCase().trim();
-      let link = `${protocol}://${hostname}:${port}/${word}`
+      let link = `/${word}`
       result_list.push({ link: link, name: item });
     });
 
     res.render('wanttogo', {list : result_list});
   } catch (err) {
     console.log(err);
+  } finally {
+    client.close();
   }
 })
 }
@@ -214,13 +225,13 @@ function validateUser (req, res, next) {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      client.close();
     }
   })
 }
 
 function search (req, res) {
-  let protocol = req.protocol ? req.protocol : 'http';
-  let hostname = req.hostname;
 
   const searchTerm = req.body.Search;
   let searchResults = [];
