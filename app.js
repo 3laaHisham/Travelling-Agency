@@ -206,10 +206,10 @@ function renderWantToGo (req, res) {
 // validates the username and password and adds the user id to the session.
 function validateUser (req, res, next) {
   const { username, password } = req.body;
-  if (username == 'admin' && password == 'admin')
+  if (username == 'admin' && password == 'admin'){
     req.session.username = 'admin';
     next();
-
+} 
   MongoClient.connect(dataBaseURL, async (err, client) => {
     if (err) throw err;
 
