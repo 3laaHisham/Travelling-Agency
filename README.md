@@ -1,18 +1,21 @@
 # Travelling-website
-A network application based on the client/server architecture using Node.js, Express.js, MongoDB 
 
-## To get the node_modules folder before running the app run the command :
 
+## Install and Run:
+First, run the following commands in your terminal
 ```
+git clone https://github.com/3laaHisham/Travelling-Agency.git
+cd Travelling-Agency
 npm install
+nodemon app
 ```
+Now, open your browser and go to this link [localhost:3000](http://localhost:3000) and enjoy.
 
 ## Live Demo of the Project 
 [https://travelling-agency.onrender.com/](https://travelling-agency.onrender.com/)
 
+Username: admin 
 
-Username :admin 
+Password: admin 
 
-Password :admin 
-
-Note that Some features doesn't work as MongoDB is set for local use.
+Note that some features don't work as MongoDB is set only for local use.
